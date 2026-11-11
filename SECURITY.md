@@ -4,7 +4,21 @@
 
 This is an experimental OpenCode V2 plugin, not a reviewed security boundary or a production-ready release. Live single-layer capture and persisted readback have passed; broader Penpot interaction and end-to-end testing remain outstanding.
 
-The current development dependency audit reports **28 upstream findings: 25 moderate and 3 critical**. The critical chain involves `@opentui/solid`, `solid-js`, and `seroval`; npm reports no available fix for that chain in the installed dependency graph. These are not asserted to be exploitable through this plugin, but mocked tests and successful loading do not establish safety. Re-run `npm audit` before release, inspect affected upstream versions and host compatibility, and review advisories. Do not hide them with blind overrides or `npm audit fix --force`. This project does not bundle or replace the host's UI runtime.
+The dependency audit on **2026-11-11** reports **28 upstream findings: 25 moderate and 3 critical**. The critical chain involves `@opentui/solid` → `solid-js` → `seroval`; installed versions include `solid-js` 1.9.12 and `seroval` 1.5.6. npm reports no available fix for that critical chain in the installed dependency graph. Some moderate findings have fixes; this does not clear the critical chain. These are not asserted to be exploitable through this plugin, but mocked tests and successful loading do not establish safety. Re-run `npm audit` before release, inspect affected upstream versions and host compatibility, and review advisories. Do not hide them with blind overrides or `npm audit fix --force`. This project does not bundle or replace the host's UI runtime.
+
+This audit covers the plugin's npm dependency graph, **not** Penpot's Docker images, operating system, or the OpenCode host's independently installed runtime. Local hosting does not make either graph vulnerability-free.
+
+## Self-hosted Penpot
+
+Before connecting a local installation:
+
+- **Check your version against [Penpot's security advisories](https://github.com/penpot/penpot/security/advisories).** In particular, [GHSA-pf4p-35w6-gcqc](https://github.com/penpot/penpot/security/advisories/GHSA-pf4p-35w6-gcqc) describes an authenticated arbitrary file read affecting versions **below 2.18.6**, fixed in **2.18.6**. A matching version is a reason to patch, not proof that your installation has been exploited. Recheck newer advisories; 2.18.6 is the minimum for this particular fix, not a permanent safe-version guarantee.
+- **Back up before upgrading.** Follow the official [self-hosting guide](https://help.penpot.app/technical-guide/getting-started/). Update the relevant services together, and verify the running backend/image version after restarting; a compose tag or frontend version alone does not establish the running backend's patch state.
+- **Keep services private.** Bind published Docker ports to loopback for a single-machine setup. Do not publish the database, cache, internal admin, MCP bridge, or debugging/REPL ports. Older MCP releases have published [REPL exposure](https://github.com/penpot/penpot/security/advisories/GHSA-852x-m8p9-558v) and [WebSocket binding](https://github.com/penpot/penpot/security/advisories/GHSA-ch2q-6x56-qg5r) advisories; check actual listeners, not just the advertised URL.
+- **Keep credentials private.** Restrict access to `.env`, backups, and token files. A local HTTP MCP endpoint can still grant powerful design access to anyone who obtains its credential. Don't disable authentication to make setup easier.
+- **Avoid untrusted imports and plugins.** Localhost doesn't stop malicious content or an untrusted browser extension from operating in your logged-in browser. Disable open registration if you don't need it. If you expose Penpot beyond loopback, review HTTPS, secure cookies, access controls, and firewall rules first.
+
+The pane only reads selection metadata, but the underlying Penpot execute-code tool can do much more. Keep OpenCode's permission checks in place. Designs remaining local does **not** mean model requests remain local: sending a message forwards its attached metadata to your configured provider.
 
 ## Attachment boundary
 

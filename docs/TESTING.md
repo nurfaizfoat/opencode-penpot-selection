@@ -62,6 +62,22 @@ Use a disposable design with synthetic names, an existing session, and a separat
 
 ## Before publication
 
+### Documentation and security review — 2026-11-11
+
+- `npm run check` passes: SDK typecheck and **33 deterministic tests**. This run
+  made no model calls and did not query or edit a Penpot design.
+- `npm audit --json` reports **28 findings: 25 moderate and 3 critical**. The
+  critical runtime dependency chain remains unresolved; see [SECURITY.md](../SECURITY.md).
+  No dependency overrides or forced fixes were applied.
+- `npm pack --dry-run` includes the setup guide and `docs/images/hero.webp`, along
+  with the plugin entrypoints. No personal config, tokens, real design exports,
+  or screenshots were included. A dry run is not an installed-package test.
+- The hero is an AI-generated illustration with fictional content, not a live
+  capture. It provides no additional evidence for the interaction checks above.
+- Self-hosting guidance was checked against the upstream Penpot advisory listing,
+  including the file-read fix in 2.18.6. This is guidance, not a container-image scan,
+  exploitation test, or security certification of a reader's installation.
+
 - [ ] Review `SECURITY.md` and current `npm audit` findings; document compatibility/security decisions.
 - [ ] Finish outstanding interaction and live Penpot tests above.
 - [ ] Run `npm pack --dry-run` and inspect every included file. Exclude local config, tokens, real designs, transcripts, and machine-specific home paths.
