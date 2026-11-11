@@ -1,0 +1,5 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  // Run npm run setup:local to generate a git-ignored registration for this checkout.
+  // No machine-specific paths or credentials belong in committed configuration.
+}
